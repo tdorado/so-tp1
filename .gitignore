@@ -1,0 +1,21 @@
+## binarios de programa principal
+
+*.so
+*.out
+
+
+## binarios de test
+
+Tests/*.so
+
+## carpetas ocultas
+
+.*
+
+## resultado del programa
+
+result.txt
+
+## contenido carpeta files
+
+files/*
