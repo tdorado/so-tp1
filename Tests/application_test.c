@@ -100,7 +100,7 @@ void write_hash_to_shm_test(){
         exit(EXIT_FAILURE);
     }
     memset(buff, 0, 256 * sizeof(char)); //limpiar todo el buffer
-    call_command("md5sum ../Sistemas_Operativos_TP1_Q1_2019.pdf", buff);
+    call_command("md5sum ../Consigna/Sistemas_Operativos_TP1_Q1_2019.pdf", buff);
     write_hash_to_shm(shm_ptr, mem_info, buff);
     //checkear si lo que hay en memoria es lo mismo que buff
     aux = strncmp(buff, (char * )shm_ptr + sizeof(t_shm_info), HASH_NAME_SIZE);

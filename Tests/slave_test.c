@@ -19,16 +19,16 @@ int main(){
 }
 
 void md5_call_test(void){
-    char * expected = "../Sistemas_Operativos_TP1_Q1_2019.pdf: dbbc672b0dec675712e78f98cfe88c25" ;
+    char * expected = "../Consigna/Sistemas_Operativos_TP1_Q1_2019.pdf: dbbc672b0dec675712e78f98cfe88c25" ;
     int length = strlen(expected);
     char buff[length];
-    call_md5("../Sistemas_Operativos_TP1_Q1_2019.pdf", buff);
+    call_md5("../Consigna/Sistemas_Operativos_TP1_Q1_2019.pdf", buff);
     assert_equals(buff, expected, sizeof(char) * length);
 }
 /*
 void read_parent_pipe_test(void){
-    char * expected = "../Sistemas_Operativos_TP1_Q1_2019.pdf: dbbc672b0dec675712e78f98cfe88c25";
-    char * input = "../Sistemas_Operativos_TP1_Q1_2019.pdf";
+    char * expected = "../Consigna/Sistemas_Operativos_TP1_Q1_2019.pdf: dbbc672b0dec675712e78f98cfe88c25";
+    char * input = "../Consigna/Sistemas_Operativos_TP1_Q1_2019.pdf";
     int test_pipe[2];
     if(pipe(test_pipe)<0){
         perror("ERROR CREANDO EL PIPE");

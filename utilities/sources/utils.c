@@ -23,24 +23,27 @@ void call_command(char * command, char * buffer){
 char * read_pipe(int pipe[2]){
     int i = 0;
     char * msg;
-    char c;
+    char c = 1;
 
-    if(!(read(pipe[0], &c, 1) > 0)){
-        return NULL;
-    }
-    
     msg = malloc(BLOCK);
-    msg[i++] = c;
-    while(read(pipe[0], &c, 1) > 0 && c != 0){
-        if(i%BLOCK==0){
-            char * aux = msg;
-            msg = realloc(aux, i + BLOCK);
-            if(msg == NULL){
-                perror("Error of memory.");
-                exit(EXIT_FAILURE);
+
+    while(c != 0){
+        int r = read(pipe[0], &c, 1);
+        if(r > 0){
+            if(i%BLOCK==0){
+                char * aux = msg;
+                msg = realloc(aux, i + BLOCK);
+                if(msg == NULL){
+                    perror("Error of memory.");
+                    exit(EXIT_FAILURE);
+                }
             }
+            msg[i++] = c;
         }
-        msg[i++] = c;
+        else{
+            perror("Error reading pipe.");
+            exit(EXIT_FAILURE);
+        }
     }
 
     if(i%BLOCK==0){

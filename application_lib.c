@@ -229,7 +229,6 @@ void check_app_arguments(int argc){
 void send_remaining_files(FILE * file, int aux, struct timeval tv, pipes_info * pipes, fd_set read_set, void * shm_ptr, shm_info mem_info, Queue * files){
     char * hash = NULL;
     // cppcheck-suppress variableScope
-    int maxfd = 0;
     while(aux>0){
         tv.tv_sec=10;
         tv.tv_usec=0;
@@ -238,7 +237,7 @@ void send_remaining_files(FILE * file, int aux, struct timeval tv, pipes_info * 
             FD_SET(pipes[i].pipe_in[0],&read_set);
         }
         //el primer argumento de select debe ser el pipe mas grande de todos + 1, aclarado en libreria de select
-        maxfd = pipes[0].pipe_in[1];
+        int maxfd = pipes[0].pipe_in[1];
         for(int i=1; i<NUMBER_OF_SLAVES;i++){
             if(maxfd < pipes[i].pipe_in[1]){
                 maxfd = pipes[i].pipe_in[1];

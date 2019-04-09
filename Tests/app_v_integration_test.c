@@ -42,7 +42,7 @@ void app_vision_integration_test(){
         exit(EXIT_FAILURE);
     }
     memset(buff, 0, 256 * sizeof(char)); //limpiar todo el buffer
-    call_command("md5sum ../Sistemas_Operativos_TP1_Q1_2019.pdf", buff);
+    call_command("md5sum ../Consigna/Sistemas_Operativos_TP1_Q1_2019.pdf", buff);
     write_hash_to_shm(shm_ptr, mem_info, buff);
     mem_info->has_finished = 1; //se terminaron los archivos
     //cerrando stdout
@@ -78,8 +78,8 @@ void app_vision_integration_test(){
     free(str);
     free(buff);
     assert_true(!strncmp(buffer,
-                        "dbbc672b0dec675712e78f98cfe88c25  ../Sistemas_Operativos_TP1_Q1_2019.pdf\n",
-                        strlen("dbbc672b0dec675712e78f98cfe88c25  ../Sistemas_Operativos_TP1_Q1_2019.pdf\n")));
+                        "dbbc672b0dec675712e78f98cfe88c25  ../Consigna/Sistemas_Operativos_TP1_Q1_2019.pdf\n",
+                        strlen("dbbc672b0dec675712e78f98cfe88c25  ../Consigna/Sistemas_Operativos_TP1_Q1_2019.pdf\n")));
 }
 
 void ejemplo_profe(){
@@ -140,7 +140,7 @@ void write_and_read_continuous_test(){
       exit(EXIT_FAILURE);
   }
   memset(buff, 0, 256 * sizeof(char)); //limpiar todo el buffer
-  call_command("md5sum ../Sistemas_Operativos_TP1_Q1_2019.pdf", buff);
+  call_command("md5sum ../Consigna/Sistemas_Operativos_TP1_Q1_2019.pdf", buff);
   write_hash_to_shm(shm_ptr, mem_info, buff);
   //cerrando stdout
   close(STDOUT_FILENO);
@@ -175,7 +175,7 @@ void write_and_read_continuous_test(){
   read(fd[0], buffer[1], 48 * sizeof(char));
   close(fd[0]);
   //comparar
-  aux = strcmp("dbbc672b0dec675712e78f98cfe88c25  ../Sistemas_Operativos_TP1_Q1_2019.pdf\n", buffer[0]);
+  aux = strcmp("dbbc672b0dec675712e78f98cfe88c25  ../Consigna/Sistemas_Operativos_TP1_Q1_2019.pdf\n", buffer[0]);
   aux += strcmp(buffer[1], " \nb1c856e726f0368927badab296266c8d  ../README.md");
   //limpiar y liberar memorias
   clear_shared_memory(shm_ptr, mem_info);
@@ -193,7 +193,7 @@ void multiple_write_with_sleep(){
   memset(output[0], 0, HASH_NAME_SIZE);
   memset(output[1], 0, HASH_NAME_SIZE);
   memset(output[2], 0, HASH_NAME_SIZE);
-  commands[0] = "md5sum ../Sistemas_Operativos_TP1_Q1_2019.pdf";
+  commands[0] = "md5sum ../Consigna/Sistemas_Operativos_TP1_Q1_2019.pdf";
   commands[1] = "md5sum ../README.md";
   commands[2] = "md5sum ./hashing_file.txt";;
   memset(buffer, 0, HASH_NAME_SIZE);
@@ -247,7 +247,7 @@ void multiple_write_with_sleep(){
   read(fd[0], output[0], 73 * sizeof(char));
   read(fd[0], output[1], 48 * sizeof(char));
   read(fd[0], output[2], 55 * sizeof(char));
-  aux =  strcmp(output[0],  "dbbc672b0dec675712e78f98cfe88c25  ../Sistemas_Operativos_TP1_Q1_2019.pdf\n");  
+  aux =  strcmp(output[0],  "dbbc672b0dec675712e78f98cfe88c25  ../Consigna/Sistemas_Operativos_TP1_Q1_2019.pdf\n");  
   aux += strcmp(output[1], " \nb1c856e726f0368927badab296266c8d  ../README.md");  
   aux += strcmp(output[2], "\n \n807a23aca22344e4426f1f73eb2c0109  ./hashing_file.txt");
   //limpiar la memoria
