@@ -25,6 +25,7 @@ $(TARGETS):
 clean:
 	@rm -f $(TARGETS) $(TARGETS:=.o) $(TARGETS:=.so)
 	@rm -f $(SOURCES) $(SOURCES:=.o)
+	@rm -f Tests/$(TASTEFUL) Tests/$(TASTEFUL:=.o) Tests/$(TASTEFUL:=.so)
 	@rm -f $(TESTS) $(TESTS:=.o) $(TESTS:=.so)
 	@rm -f $(TEST_SOURCES) $(TEST_SOURCES:=.o)
 	@rm -f result.txt
