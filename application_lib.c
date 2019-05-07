@@ -133,31 +133,28 @@ int open_pipes(pipes_info pipes[NUMBER_OF_SLAVES]){
     return 0;
 }
 
-void close_pipes(pipes_info pipes[NUMBER_OF_SLAVES]){
-    //Proceso padre envia un 0 por los pipes a los hijos para indicarles que terminen su proceso
-    char exit_msg = 0;
+void close_pipes(pid_t pids[NUMBER_OF_SLAVES], pipes_info pipes[NUMBER_OF_SLAVES]){
     int i;
     for(i=0; i<NUMBER_OF_SLAVES;i++){
-        write(pipes[i].pipe_out[1], &exit_msg, 1);
-
         //Cerramos el final de lectura del pipe de entrada
         close(pipes[i].pipe_in[0]);
         //Cerramos el final de escritura del pipe de salida
         close(pipes[i].pipe_out[1]);
+        //Matamos proceso hijo
+        kill(pids[i], SIGKILL);
     }
 }
 
-void fork_slaves(pipes_info pipes[NUMBER_OF_SLAVES]){
+void fork_slaves(pid_t pids[NUMBER_OF_SLAVES], pipes_info pipes[NUMBER_OF_SLAVES]){
     int i;
-    pid_t p;
-        // padre crea procesos esclavos y les envia trabajo
+    // padre crea procesos esclavos y pipes
     for(i=0; i<NUMBER_OF_SLAVES; i++){
-        p=fork();
-        if(p<0){
+        pids[i]=fork();
+        if(pids[i]<0){
             perror("Error: Fork failed.");
             exit(EXIT_FAILURE);
         }
-        else if(p==0){ // proceso hijo/esclavo
+        else if(pids[i]==0){ // proceso hijo/esclavo
             //Cerramos el final de escritura del pipe de salida
             close(pipes[i].pipe_out[1]);
             //Cerramos el final de lectura del pipe de entrada
@@ -205,14 +202,12 @@ void send_initial_files(Queue * files, pipes_info pipes[NUMBER_OF_SLAVES]){
     }   
 }
 
-void terminate_program(shm_info mem_info, pipes_info * pipes, Queue * files, void * shm_ptr, int total_files_number){
+void terminate_program(pid_t pids[NUMBER_OF_SLAVES], shm_info mem_info, pipes_info * pipes, Queue * files, void * shm_ptr){
     mem_info->has_finished = 1;
 
-    close_pipes(pipes);
+    close_pipes(pids, pipes);
 
     freeQueue(files);
-
-    //save_buffer_to_file(shm_ptr, total_files_number);
 
     //desvincularse a la memoria y liberarla
     clear_shared_memory(shm_ptr, mem_info);
@@ -226,10 +221,10 @@ void check_app_arguments(int argc){
     }
 }
 
-void send_remaining_files(FILE * file, int aux, struct timeval tv, pipes_info * pipes, fd_set read_set, void * shm_ptr, shm_info mem_info, Queue * files){
+void send_remaining_files(FILE * file, int total_files_number, struct timeval tv, pipes_info * pipes, fd_set read_set, void * shm_ptr, shm_info mem_info, Queue * files){
     char * hash = NULL;
     // cppcheck-suppress variableScope
-    while(aux>0){
+    while(total_files_number>0){
         tv.tv_sec=10;
         tv.tv_usec=0;
         
@@ -247,11 +242,11 @@ void send_remaining_files(FILE * file, int aux, struct timeval tv, pipes_info * 
             perror("Error: Select failed.\n");
             exit(EXIT_FAILURE);
         }
-        for(int i=0; i<NUMBER_OF_SLAVES && aux>0; i++){
+        for(int i=0; i<NUMBER_OF_SLAVES && total_files_number>0; i++){
             if(FD_ISSET(pipes[i].pipe_in[0],&read_set)){
                 hash = read_pipe(pipes[i].pipe_in);
                 if(hash != NULL && strcmp(hash,"-1")!=0){
-                    aux--;
+                    total_files_number--;
                     write_hash_to_shm(shm_ptr, mem_info, hash);
                     save_hash_to_file(file, hash);
                 }

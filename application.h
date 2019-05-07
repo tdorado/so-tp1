@@ -15,6 +15,7 @@
 #include <fcntl.h>           /* For O_* constants */
 #include <string.h>
 #include <dirent.h>
+#include <signal.h>
 
 //librerías propias
 #include "utilities/queue.h"
@@ -73,22 +74,22 @@ void send_file(Queue * files, int pipe_out[]);
 int open_pipes(pipes_info pipes[NUMBER_OF_SLAVES]);
 
 //envia mensaje para terminar procesos hijos y cierra pipes desde el padre
-void close_pipes(pipes_info pipes[NUMBER_OF_SLAVES]);
+void close_pipes(pid_t pids[NUMBER_OF_SLAVES], pipes_info pipes[NUMBER_OF_SLAVES]);
 
 //realiza la creacion de hijos esclavos y deja los pipes listos
-void fork_slaves(pipes_info pipes[NUMBER_OF_SLAVES]);
+void fork_slaves(pid_t pids[NUMBER_OF_SLAVES], pipes_info pipes[NUMBER_OF_SLAVES]);
 
 //envia los archivos iniciales a los esclavos
 void send_initial_files(Queue * files, pipes_info pipes[NUMBER_OF_SLAVES]);
 
 //función para cerrar todos los recursos del programa
-void terminate_program(shm_info mem_info, pipes_info * pipes, Queue * files, void * shm_ptr, int total_files_number);
+void terminate_program(pid_t pids[NUMBER_OF_SLAVES], shm_info mem_info, pipes_info * pipes, Queue * files, void * shm_ptr);
 
 //checkear si no pasan argumentos
 void check_app_arguments(int argc);
 
 //función que se encarga de procesar los archivos restantes
-void send_remaining_files(FILE * file, int aux, struct timeval tv, pipes_info * pipes, fd_set read_set, void * shm_ptr, shm_info mem_info, Queue * files);
+void send_remaining_files(FILE * file, int total_files_number, struct timeval tv, pipes_info * pipes, fd_set read_set, void * shm_ptr, shm_info mem_info, Queue * files);
 
 
 #endif
