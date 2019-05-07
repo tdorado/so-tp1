@@ -89,7 +89,7 @@ void terminate_program(pid_t pids[NUMBER_OF_SLAVES], shm_info mem_info, pipes_in
 void check_app_arguments(int argc);
 
 //función que se encarga de procesar los archivos restantes
-void send_remaining_files(FILE * file, int total_files_number, struct timeval tv, pipes_info * pipes, fd_set read_set, void * shm_ptr, shm_info mem_info, Queue * files);
+void send_remaining_files(FILE * file, int total_files_number, pipes_info * pipes, void * shm_ptr, shm_info mem_info, Queue * files);
 
 
 #endif

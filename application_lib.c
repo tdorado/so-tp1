@@ -221,7 +221,11 @@ void check_app_arguments(int argc){
     }
 }
 
-void send_remaining_files(FILE * file, int total_files_number, struct timeval tv, pipes_info * pipes, fd_set read_set, void * shm_ptr, shm_info mem_info, Queue * files){
+void send_remaining_files(FILE * file, int total_files_number, pipes_info * pipes, void * shm_ptr, shm_info mem_info, Queue * files){
+    fd_set read_set;
+    struct timeval tv = {10, 0};
+    // inicializamos para select
+    FD_ZERO(&read_set);
     char * hash = NULL;
     // cppcheck-suppress variableScope
     while(total_files_number>0){

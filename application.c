@@ -10,16 +10,11 @@ int main(int argc, char ** argv){
     // creamos e inicializamos la shm
     void * shm_ptr = create_shared_memory();
     shm_info mem_info = initialize_shared_memory(shm_ptr);
-    fd_set read_set;
-    struct timeval tv = {10, 0};
     pipes_info pipes[NUMBER_OF_SLAVES];
     Queue * files = newQueue();
     FILE * file = fopen("result.txt", "w+a+");
     int total_files_number;
     pid_t pids[NUMBER_OF_SLAVES];
-
-    // inicializamos para select
-    FD_ZERO(&read_set);
 
     //inicializamos la queue de files
     queueInit(files, sizeof(char*));
@@ -37,7 +32,7 @@ int main(int argc, char ** argv){
 
     fork_slaves(pids, pipes);
     send_initial_files(files, pipes);
-    send_remaining_files(file, total_files_number, tv, pipes, read_set, shm_ptr, mem_info, files);
+    send_remaining_files(file, total_files_number, pipes, shm_ptr, mem_info, files);
     terminate_program(pids, mem_info, pipes, files, shm_ptr);
     fclose(file);
 
