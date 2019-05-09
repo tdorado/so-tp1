@@ -31,12 +31,7 @@ void load_file(char * file_name, int pipe[2]){
 void read_parent_pipe(int standards[]){
      char * msg = read_pipe(standards);
         if(msg != NULL){
-            if(*msg == 0){
-                free(msg);
-                exit(0);
-            }else{
-                load_file(msg, standards);
-            }
+            load_file(msg, standards);
             free(msg);
         }
 }
